@@ -28,7 +28,7 @@ var Map = {
         return "hullo";
     },
     cell: function(r, c) {
-        return this.cells[this._getCellIndex(r, c)];
+        return this.cells[this._cellIndex(r, c)];
     },
     _cellIndex: function(r, c) {
         return r*this.settings.SIZE + c;
@@ -44,5 +44,23 @@ function Cell($cell, r, c) {
 
 Cell.prototype.setWord = function(word) {
     this.word = word;
-    this.$cell.html(word);
+    this.nTyped = 0;
+    this.typerUpdate("");
+};
+
+Cell.prototype.typerUpdate = function(typed) {
+    if (typed == this.word.substring(0, typed.length)) {
+        this.showAsTyped(typed);
+        return typed.length != 0;
+    }
+
+    this.showAsTyped("");
+    return false;
+};
+
+Cell.prototype.showAsTyped = function(typed) {
+    this.$cell.html("<span class='typed'>" + typed + "</span>"
+                    + "<span class='untyped'>"
+                    + this.word.substring(typed.length)
+                    + "</span>");
 };
