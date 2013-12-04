@@ -4,15 +4,45 @@ var Map = {
         SIZE: 10
     },
     init: function() {
-        this.cells = new Array(this.settings.SIZE);
+        this.$map = $('#map');
+
+        // create html table
+        this.cells = new Array(this.settings.SIZE*this.settings.SIZE);
+            // keep this.cells 1D for easy looping elsewhere
         for (var r=0; r<this.settings.SIZE; r++) {
-            $tr = $('<tr/>');
-            this.cells[r] = new Array(this.settings.SIZE);
+            var $tr = $('<tr/>');
             for (var c=0; c<this.settings.SIZE; c++) {
-                this.cells[r][c] = $('<td>hello</td>');
-                $tr.append(this.cells[r][c]);
+                var $td = $('<td/>');
+                $tr.append($td);
+                this.cells[this._cellIndex(r, c)] = new Cell($td, r, c);
             }
-            $('#map').append($tr);
+            this.$map.append($tr);
         }
+
+        // fill with words
+        this.cells.forEach(function(cell) {
+            cell.setWord(Map.getWord(1));
+        });
+    },
+    getWord: function(difficulty) {
+        return "hullo";
+    },
+    cell: function(r, c) {
+        return this.cells[this._getCellIndex(r, c)];
+    },
+    _cellIndex: function(r, c) {
+        return r*this.settings.SIZE + c;
     }
+};
+
+function Cell($cell, r, c) {
+    this.$cell = $cell;
+    this.r = r;
+    this.c = c;
+    this.word = null;
+}
+
+Cell.prototype.setWord = function(word) {
+    this.word = word;
+    this.$cell.html(word);
 };
