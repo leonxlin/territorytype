@@ -1,4 +1,4 @@
 territorytype
 =============
 
-A typing game.
+A typing game. In progress.
