@@ -1,0 +1,4 @@
+territorytype
+=============
+
+A typing game.
