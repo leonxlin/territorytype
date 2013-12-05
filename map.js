@@ -5,7 +5,8 @@ var Map = {
         START_R: 9,
         START_C: 4,
         NEIGHBOR_R_DELTAS: [-1, 0, 1, 0],
-        NEIGHBOR_C_DELTAS: [0, 1, 0, -1]
+        NEIGHBOR_C_DELTAS: [0, 1, 0, -1],
+        MAX_FORTIFICATION: 3
     },
     init: function() {
         this.$map = $('#map');
@@ -50,7 +51,19 @@ function Cell($cell, r, c) {
     this.r = r;
     this.c = c;
     this.word = "";
+    this.fortification = 0;
 }
+
+Cell.prototype.fortify = function(n) { 
+    // negative n indicates enemy progress
+
+    if (Math.abs(this.fortification + n)
+        <= Map.settings.MAX_FORTIFICATION) {
+        this.$cell.removeClass("fort" + this.fortification);
+        this.fortification += n;
+        this.$cell.addClass("fort" + this.fortification);
+    }
+};
 
 Cell.prototype.setWord = function(word) {
     this.word = word;
@@ -59,13 +72,19 @@ Cell.prototype.setWord = function(word) {
 };
 
 Cell.prototype.typerUpdate = function(typed) {
+    if (typed == this.word) {
+        this.fortify(1);
+        this.setWord(Map.getWord(5));
+        return "complete";
+    }
+
     if (typed == this.word.substring(0, typed.length)) {
         this.showAsTyped(typed);
-        return typed.length != 0;
+        return typed.length == 0 ? "empty" : "partial";
     }
 
     this.showAsTyped("");
-    return false;
+    return "fail";
 };
 
 Cell.prototype.showAsTyped = function(typed) {

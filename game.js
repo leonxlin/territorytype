@@ -1,9 +1,13 @@
 
 var Game = {
     handle_input: function() {
+        var match = {"fail": 0, "empty": 0, "partial": 0, "complete": 0};
         Map.cells.forEach(function(cell) {
-            cell.typerUpdate(Game.$typer.prop('value'));
+            match[cell.typerUpdate(Game.$typer.val())]++;
         });
+        if (match["partial"] == 0) {
+            Game.$typer.val("");
+        }
     },
     init: function() {
         this.$typer = $('#typer');
